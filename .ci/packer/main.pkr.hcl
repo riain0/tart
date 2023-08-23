@@ -42,7 +42,7 @@ data "amazon-ami" "macos" {
 }
 
 source "amazon-ebs" "macos" {
-  ami_name   = data.amazon-ami.macos.name
+  ami_name   = local.ami_name
   source_ami = data.amazon-ami.macos.id
 
   instance_type = "mac2.metal"
