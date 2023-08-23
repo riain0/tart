@@ -13,18 +13,6 @@ packer {
 # Variables #
 #############
 
-variable "region" {
-  type = string
-
-  description = "AWS region in which to build the image"
-}
-
-variable "source_ami_id" {
-  type = string
-
-  description = "ID of the source AMI we're building on top of"
-}
-
 variable "target_ami_name" {
   type = string
 
@@ -45,11 +33,20 @@ locals {
   ami_name = format("%s-%s-arm64", var.target_ami_name, var.tart_version)
 }
 
+data "amazon-ami" "macos" {
+  filters = {
+    name = "amzn-ec2-macos-13.*-arm64"
+  }
+  owners = ["628277914472"]
+  most_recent = true
+}
+
 source "amazon-ebs" "macos" {
-  ami_name = local.ami_name
+  ami_name   = data.amazon-ami.macos.name
+  source_ami = data.amazon-ami.macos.id
 
   instance_type = "mac2.metal"
-  region        = var.region
+  region        = "us-east-1"
 
   ena_support   = true
   ebs_optimized = true
@@ -73,10 +70,6 @@ source "amazon-ebs" "macos" {
   placement {
     tenancy = "host"
   }
-
-  # We should be in control of when a newer version of MacOS AMI
-  # is used as a base for our builds
-  source_ami = var.source_ami_id
 
   run_tags = {
     Name = local.ami_name
