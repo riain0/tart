@@ -31,12 +31,18 @@ variable "target_ami_name" {
   description = "Common part of the name given to the AMI"
 }
 
+variable "tart_version" {
+  type = string
+
+  description = "The latest Tart version for pinning and tagging"
+}
+
 #########################
 # AMI source definition #
 #########################
 
 locals {
-  ami_name = format("%s-arm64-%s", var.target_ami_name, formatdate("YYYYMMDDhhmmssZ", timestamp()))
+  ami_name = format("%s-%s-arm64", var.target_ami_name, var.tart_version)
 }
 
 source "amazon-ebs" "macos" {
