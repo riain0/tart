@@ -139,6 +139,20 @@ task:
     - sentry-cli releases set-commits $SENTRY_RELEASE --auto
     - sentry-cli releases finalize $SENTRY_RELEASE
 
+docker_builder:
+  name: Release AMI for AWS
+  only_if: $CIRRUS_TAG != ''
+  depends_on: Release
+  install_script:
+    - sudo apt-get install jq
+  allocate_hosts_script: aws ec2 allocate-hosts --region us-east-1 --instance-type mac2.metal --availability-zone us-east-1a --auto-placement "on" --quantity 1
+  packer_script:
+    - cd .ci/packer
+    - packer init main.pkr.hcl
+    - export AMI_ID = $(shell jq -r '.builds[-1].artifact_id | split(":")[1]' "manifest.json")
+  always:
+    release_hosts_script: aws ec2 release-hosts --host-ids h-012a3456b7890cdef
+
 task:
   name: Deploy Documentation
   only_if: $CIRRUS_BRANCH == 'main'
