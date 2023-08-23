@@ -19,24 +19,6 @@ variable "region" {
   description = "AWS region in which to build the image"
 }
 
-variable "host_resource_group_arn" {
-  type = string
-
-  description = "ARN of the host resource group used to spin-up AWS mac2.metal instances"
-}
-
-variable "license_configuration_arn" {
-  type = string
-
-  description = "ARN of the license configuration used to spin-up AWS mac2.metal isntaces"
-}
-
-variable "manifest_file" {
-  type = string
-
-  description = "Name of the file that will hold manifest with details of built AMI"
-}
-
 variable "source_ami_id" {
   type = string
 
@@ -83,14 +65,7 @@ source "amazon-ebs" "macos" {
   }
 
   placement {
-    host_resource_group_arn = var.host_resource_group_arn
-    tenancy                 = "host"
-  }
-
-  license_specifications {
-    license_configuration_request {
-      license_configuration_arn = var.license_configuration_arn
-    }
+    tenancy = "host"
   }
 
   # We should be in control of when a newer version of MacOS AMI
@@ -149,8 +124,8 @@ build {
   ]
 
   provisioner "file" {
-    source      = "./assets/"
-    destination = "/Users/ec2-user/"
+    source      = "./scripts/"
+    destination = "/Users/ec2-user/scripts"
   }
 
   provisioner "shell" {

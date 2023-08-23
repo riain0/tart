@@ -7,12 +7,14 @@ source ~/.zshrc
 
 set -x
 
-echo "Installing tart"
+echo "Installing Tart, Orchard and Cirrus CLI"
 
 brew install cirruslabs/cli/tart cirruslabs/cli/orchard cirruslabs/cli/cirrus
 
-# set SUID-bit
+# set SUID-bit for softnet
 sudo chmod 04755 /opt/homebrew/bin/softnet
 
+softnet --help
 tart --version
-tart list
+orchard --version
+cirrus --version
