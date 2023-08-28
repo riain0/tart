@@ -59,7 +59,9 @@ struct Darwin: PlatformSuspendable {
   func platform(nvramURL: URL) throws -> VZPlatformConfiguration {
     let result = VZMacPlatformConfiguration()
 
-    result.machineIdentifier = ecid
+    let machineIdentifier = VZMacMachineIdentifier()
+    print(machineIdentifier.dataRepresentation.base64EncodedString())
+    result.machineIdentifier = machineIdentifier
     result.auxiliaryStorage = VZMacAuxiliaryStorage(contentsOf: nvramURL)
 
     if !hardwareModel.isSupported {
