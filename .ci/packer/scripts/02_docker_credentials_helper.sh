@@ -13,6 +13,8 @@ mkdir -p ~/.docker
 
 cat > ~/.docker/config.json <<EOF
 {
-  "credsStore": "ecr-login"
+  "credHelpers": {
+    "(.*).dkr.ecr.(.*).amazonaws.com": "ecr-login"
+  }
 }
 EOF
